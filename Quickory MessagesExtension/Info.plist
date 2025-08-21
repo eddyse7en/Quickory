@@ -2,12 +2,111 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSExtension</key>
-	<dict>
-		<key>NSExtensionMainStoryboard</key>
-		<string>MainInterface</string>
-		<key>NSExtensionPointIdentifier</key>
-		<string>com.apple.message-payload-provider</string>
-	</dict>
+    <!--
+    NSExtension: This is the root key that tells iOS this bundle is an extension.
+    All extension configuration must be inside this dictionary.
+    -->
+    <key>NSExtension</key>
+    <dict>
+        <!--
+        NSExtensionAttributes: Contains extension-specific configuration.
+        For iMessage extensions, this defines how your app behaves within Messages.
+        -->
+        <key>NSExtensionAttributes</key>
+        <dict>
+            <!--
+            MSMessagesAppSupportedPresentationContexts: Defines where your extension can appear.
+            
+            MSMessagesAppPresentationContextMessages:
+            - Your extension appears in the normal Messages conversation view
+            - This is the standard chat interface where people send messages
+            
+            MSMessagesAppPresentationContextMedia:
+            - Your extension appears in the "app drawer" at the bottom of Messages
+            - This is where users can browse and select different iMessage apps
+            
+            Including both means your extension works in both contexts.
+            -->
+            <key>MSMessagesAppSupportedPresentationContexts</key>
+            <array>
+                <string>MSMessagesAppPresentationContextMessages</string>
+                <string>MSMessagesAppPresentationContextMedia</string>
+            </array>
+            
+            <!--
+            MSMessagesAppUsesGameKitGameID: Indicates if your app integrates with Game Center.
+            
+            <true/>: Your app uses Game Center features (leaderboards, achievements, multiplayer)
+            <false/>: Your app doesn't use Game Center
+            
+            Set to true if you plan to add Game Center integration later.
+            Set to false for simpler games or if you handle multiplayer yourself.
+            -->
+            <key>MSMessagesAppUsesGameKitGameID</key>
+            <false/>
+        </dict>
+        
+        <!--
+        NSExtensionPointIdentifier: CRITICAL - This tells iOS what type of extension this is.
+        
+        "com.apple.message-payload-provider": The correct identifier for iMessage extensions
+        
+        NEVER USE:
+        - "com.apple.messages-app" (deprecated/old)
+        - Any other identifier
+        
+        This MUST be exactly "com.apple.message-payload-provider" or your extension won't load.
+        -->
+        <key>NSExtensionPointIdentifier</key>
+        <string>com.apple.message-payload-provider</string>
+        
+        <!--
+        NSExtensionPrincipalClass: Specifies the main class that controls your extension.
+        
+        $(PRODUCT_MODULE_NAME): This is a build variable that becomes your module name
+        .MessagesViewController: The specific class that inherits from MSMessagesAppViewController
+        
+        IMPORTANT: You can ONLY use EITHER this OR NSExtensionMainStoryboard, NEVER both!
+        
+        Use NSExtensionPrincipalClass when:
+        - Building with SwiftUI (like we are)
+        - Creating UI programmatically in code
+        - Want full control over the view controller lifecycle
+        
+        Use NSExtensionMainStoryboard when:
+        - Building with traditional Storyboard files
+        - Prefer visual interface design
+        -->
+        <key>NSExtensionPrincipalClass</key>
+        <string>$(PRODUCT_MODULE_NAME).MessagesViewController</string>
+        
+        <!--
+        DO NOT INCLUDE NSExtensionMainStoryboard when using NSExtensionPrincipalClass!
+        
+        If you were using Storyboards instead, you would have:
+        <key>NSExtensionMainStoryboard</key>
+        <string>MainInterface</string>
+        
+        But since we're using SwiftUI with a custom MessagesViewController,
+        we use NSExtensionPrincipalClass instead.
+        -->
+    </dict>
+    
+    <!-- Bundle display name for the extension -->
+    <key>CFBundleDisplayName</key>
+    <string>Quickory</string>
+    
+    <!-- Version information -->
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    
+    <!-- Minimum iOS version required -->
+    <key>LSMinimumSystemVersion</key>
+    <string>15.0</string>
 </dict>
 </plist>
+
+
